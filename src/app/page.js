@@ -14,7 +14,7 @@ export default function Home() {
         <a href="/login" className="px-4 py-2 bg-blue-800 text-white rounded-lg hover:bg-blue-900">
           Login
         </a>
-        <a href="/signup" className="px-4 py-2 bg-brown-600 text-white rounded-lg hover:bg-brown-700">
+        <a href="/signup" className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-brown-700">
           Sign Up
         </a>
       </div>
