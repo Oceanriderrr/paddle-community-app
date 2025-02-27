@@ -7,11 +7,29 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-blue-300 flex flex-col items-center justify-center p-4">
-      {/* Header with tribal vibe */}
-      <h1 className="text-4xl font-bold text-blue-900 mb-2 border-b-4 border-blue-900 border-double pb-2">
+      {/* Centered Title */}
+      <h1 className="text-4xl font-bold text-blue-900 mb-2 border-b-4 border-blue-900 border-dashed pb-2">
         Aloha Paddlers
       </h1>
+
+      {/* Subtitle */}
       <p className="text-lg text-gray-800 mb-6">Join the Hawaii Paddle Community</p>
+
+      {/* Login and Sign Up Buttons */}
+      <div className="space-x-4 mb-8">
+        <a
+          href="/login"
+          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+        >
+          Login
+        </a>
+        <a
+          href="/signup"
+          className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
+        >
+          Sign Up
+        </a>
+      </div>
 
       {/* Mini Calendar/Board */}
       <div className="w-full max-w-md bg-white rounded-lg shadow p-4 mb-8">
