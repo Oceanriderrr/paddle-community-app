@@ -7,7 +7,7 @@ export default function Paddlers() {
     ];
   
     return (
-      <div className="min-h-screen bg-green-100 flex flex-col items-center p-8">
+      <div className="min-h-screen bg-green-500 flex flex-col items-center p-8">
         {/* Title with tribal vibe */}
         <h1 className="text-3xl font-bold text-green-900 mb-6 border-b-4 border-green-900 border-dashed pb-2">
           Find Paddlers
