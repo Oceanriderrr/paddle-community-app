@@ -7,9 +7,8 @@ export default function Boats() {
     ];
   
     return (
-      <div className="min-h-screen bg-blue-400 flex flex-col items-center p-8">
-        {/* Title with tribal vibe */}
-        <h1 className="text-3xl font-bold text-blue-900 mb-6 border-b-4 border-blue-900 border-dashed pb-2">
+        <div className="min-h-screen beach-bg sunset-glow flex flex-col items-center p-8">
+        <h1 className="text-3xl font-bold text-white mb-6 border-b-4 border-brown-600 border-dashed pb-2 canoe-silhouette">
           Find Escort Boats
         </h1>
   
