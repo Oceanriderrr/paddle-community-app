@@ -1,7 +1,7 @@
 import { MongoClient } from "mongodb";
 
 const uri = process.env.MONGODB_URI;
-console.log("MONGODB_URI:", uri); // Add this
+console.log("MONGODB_URI:", uri);
 const options = {};
 
 let client;
@@ -14,7 +14,14 @@ if (!uri) {
 if (process.env.NODE_ENV === "development") {
   if (!global._mongoClientPromise) {
     client = new MongoClient(uri, options);
-    global._mongoClientPromise = client.connect();
+    try {
+      console.log("Attempting to connect to MongoDB...");
+      global._mongoClientPromise = client.connect();
+      console.log("MongoDB connected successfully");
+    } catch (error) {
+      console.error("MongoDB connection failed:", error);
+      throw error; // Rethrow to see full stack trace
+    }
   }
   clientPromise = global._mongoClientPromise;
 } else {
