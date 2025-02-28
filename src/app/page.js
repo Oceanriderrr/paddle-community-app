@@ -5,34 +5,42 @@ export default function Home() {
   ];
 
   return (
-    <div className="min-h-screen beach-bg sunset-glow flex flex-col items-center justify-center p-4">
-      <h1 className="text-4xl font-bold text-white mb-2 border-b-4 border-brown-600 border-dashed pb-2 canoe-silhouette">
+    <div className="min-h-screen hawaiian-bg wave-layer vignette flex flex-col items-center justify-center p-6">
+      {/* Header */}
+      <h1 className="text-5xl font-bold text-[#F5F5F5] mb-4 border-b-2 border-[#6D4C41] pb-2 tracking-tight">
         Aloha Paddlers
       </h1>
-      <p className="text-lg text-white mb-6">Join the Hawaii Paddle Community</p>
-      <div className="space-x-4 mb-8">
-        <a href="/login" className="px-4 py-2 bg-blue-800 text-white rounded-lg hover:bg-blue-900">
+      <p className="text-xl text-[#F5F5F5] mb-8">A Modern Hub for Hawaii’s Paddle Community</p>
+
+      {/* Buttons */}
+      <div className="flex space-x-6 mb-10">
+        <a href="/login" className="px-6 py-3 bg-[#40C4FF] text-[#1C2526] rounded-lg shadow-md hover:bg-[#558B2F] hover:text-[#F5F5F5] transition border border-[#6D4C41]">
           Login
         </a>
-        <a href="/signup" className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-brown-700">
+        <a href="/signup" className="px-6 py-3 bg-[#558B2F] text-[#F5F5F5] rounded-lg shadow-md hover:bg-[#40C4FF] hover:text-[#1C2526] transition border border-[#6D4C41]">
           Sign Up
         </a>
       </div>
-      <div className="w-full max-w-md bg-white bg-opacity-90 rounded-lg shadow p-4 mb-8">
-        <h2 className="text-xl font-semibold text-blue-800 mb-3">Community Board</h2>
-        <ul className="space-y-2">
+
+      {/* Community Board */}
+      <div className="w-full max-w-2xl bg-[#F5F5F5] rounded-lg shadow-lg p-6">
+        <h2 className="text-2xl font-bold text-[#6D4C41] mb-4">Community Board</h2>
+        <div className="wave-divider mb-4"></div>
+        <ul className="space-y-3">
           {events.map((event) => (
-            <li key={event.id} className="text-gray-800">
+            <li key={event.id} className="text-[#1C2526] text-lg">
               {event.title}
             </li>
           ))}
         </ul>
       </div>
-      <div className="space-x-4">
-        <a href="/paddlers" className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700">
+
+      {/* Navigation */}
+      <div className="mt-10 flex space-x-6">
+        <a href="/paddlers" className="px-8 py-4 bg-[#558B2F] text-[#F5F5F5] rounded-lg shadow-md hover:bg-[#40C4FF] hover:text-[#1C2526] transition border border-[#6D4C41]">
           Find Paddlers
         </a>
-        <a href="/boats" className="px-6 py-3 bg-blue-800 text-white rounded-lg hover:bg-blue-900">
+        <a href="/boats" className="px-8 py-4 bg-[#40C4FF] text-[#1C2526] rounded-lg shadow-md hover:bg-[#558B2F] hover:text-[#F5F5F5] transition border border-[#6D4C41]">
           Find Escort Boats
         </a>
       </div>
