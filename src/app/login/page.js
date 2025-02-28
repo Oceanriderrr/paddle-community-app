@@ -13,37 +13,49 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen beach-bg sunset-glow flex flex-col items-center justify-center p-4">
-      <h1 className="text-3xl font-bold text-white mb-6">Login</h1>
-      <form onSubmit={handleSubmit} className="w-full max-w-md bg-white bg-opacity-90 rounded-lg shadow p-6">
+    <div className="min-h-screen hawaiian-bg wave-layer vignette flex flex-col items-center justify-center p-6">
+      {/* Header */}
+      <h1 className="text-5xl font-bold text-[#F5F5F5] mb-6 border-b-2 border-[#6D4C41] pb-2 tracking-tight">
+        Login
+      </h1>
+
+      {/* Form */}
+      <form onSubmit={handleSubmit} className="w-full max-w-md bg-[#F5F5F5] rounded-lg shadow-lg p-6">
         <div className="mb-4">
-          <label className="block text-gray-800 mb-2">Email</label>
+          <label className="block text-[#1C2526] text-lg mb-2">Email</label>
           <input
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full p-2 border rounded"
+            className="w-full p-2 border border-[#6D4C41] rounded-lg text-[#1C2526]"
             required
           />
         </div>
-        <div className="mb-4">
-          <label className="block text-gray-800 mb-2">Password</label>
+        <div className="mb-6">
+          <label className="block text-[#1C2526] text-lg mb-2">Password</label>
           <input
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full p-2 border rounded"
+            className="w-full p-2 border border-[#6D4C41] rounded-lg text-[#1C2526]"
             required
           />
         </div>
         <button
           type="submit"
-          className="w-full px-4 py-2 bg-blue-800 text-white rounded-lg hover:bg-blue-900"
+          className="w-full px-4 py-2 bg-[#40C4FF] text-[#1C2526] rounded-lg shadow-md hover:bg-[#558B2F] hover:text-[#F5F5F5] transition border border-[#6D4C41]"
         >
           Login
         </button>
       </form>
-      <a href="/" className="mt-4 text-white hover:underline">Back to Home</a>
+
+      {/* Back to Home */}
+      <a
+        href="/"
+        className="mt-6 text-[#40C4FF] hover:text-[#558B2F] text-lg transition"
+      >
+        Back to Home
+      </a>
     </div>
   );
 }
