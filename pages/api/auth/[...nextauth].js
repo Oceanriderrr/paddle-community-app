@@ -23,24 +23,38 @@ export default NextAuth({
           if (existingUser) {
             throw new Error("Email already taken");
           }
+
+          const validRoles = ["paddler", "boat", "event_organizer"];
+          const newRole = validRoles.includes(role) ? role : "paddler";
+          const approved = newRole === "event_organizer" ? false : true; // Organizers need approval
+
           const newUser = {
             email,
-            password, // Plain text for now—hash later with bcrypt
-            role: role || "paddler",
-            name: "New User", // Placeholder, editable later
+            password, // Plain text—hash later
+            role: newRole,
+            approved,
+            name: "New User",
             createdAt: new Date(),
           };
           const result = await db.collection("users").insertOne(newUser);
+
+          if (!approved) {
+            return null; // NextAuth will redirect with error
+          }
+
           return {
             id: result.insertedId.toString(),
             email,
-            role: newUser.role,
-            name: newUser.name,
+            role: newRole,
+            name: "New User",
           };
         } else { // Login
           const user = await db.collection("users").findOne({ email });
           if (!user || user.password !== password) {
             throw new Error("Invalid email or password");
+          }
+          if (!user.approved) {
+            throw new Error("Account not yet approved");
           }
           return {
             id: user._id.toString(),
@@ -49,6 +63,13 @@ export default NextAuth({
             name: user.name,
           };
         }
+      },
+      // Add custom error messages for CredentialsSignin
+      async error(credentials, req) {
+        if (credentials.role === "event_organizer" && !req.body.role) {
+          return "Account created—awaiting admin approval";
+        }
+        return "Invalid credentials";
       },
     }),
   ],

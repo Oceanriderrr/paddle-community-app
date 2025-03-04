@@ -15,12 +15,9 @@ export default function SignUp() {
 
   return (
     <div className="min-h-screen hawaiian-bg wave-layer vignette flex flex-col items-center justify-center p-6">
-      {/* Header */}
       <h1 className="text-5xl font-bold text-[#F5F5F5] mb-6 border-b-2 border-[#6D4C41] pb-2 tracking-tight">
         Sign Up
       </h1>
-
-      {/* Form */}
       <form onSubmit={handleSubmit} className="w-full max-w-md bg-[#F5F5F5] rounded-lg shadow-lg p-6">
         <div className="mb-4">
           <label className="block text-[#1C2526] text-lg mb-2">Email</label>
@@ -51,6 +48,7 @@ export default function SignUp() {
           >
             <option value="paddler">Paddler</option>
             <option value="boat">Boat</option>
+            <option value="event_organizer">Event Organizer</option>
           </select>
         </div>
         <button
@@ -60,8 +58,6 @@ export default function SignUp() {
           Sign Up
         </button>
       </form>
-
-      {/* Back to Home */}
       <a
         href="/"
         className="mt-6 text-[#40C4FF] hover:text-[#558B2F] text-lg transition"
