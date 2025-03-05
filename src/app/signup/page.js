@@ -2,15 +2,24 @@
 
 import { signIn } from "next-auth/react";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function SignUp() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("paddler");
+  const router = useRouter();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await signIn("credentials", { email, password, role, callbackUrl: "/" });
+    const result = await signIn("credentials", { email, password, role, callbackUrl: "/" });
+    if (result?.error) {
+      // Error handled by /login (no action needed here)
+    } else if (result?.ok) {
+      // Use redirectUrl from session if available
+      const redirectUrl = result.url || "/"; // Fallback to "/" if no redirectUrl
+      router.push(redirectUrl);
+    }
   };
 
   return (

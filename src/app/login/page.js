@@ -2,13 +2,14 @@
 
 import { signIn } from "next-auth/react";
 import { useState, useEffect } from "react";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const searchParams = useSearchParams();
   const [error, setError] = useState("");
+  const router = useRouter();
 
   useEffect(() => {
     const errorParam = searchParams.get("error");
@@ -22,6 +23,10 @@ export default function Login() {
     const result = await signIn("credentials", { email, password, callbackUrl: "/" });
     if (result?.error) {
       setError(result.error);
+    } else if (result?.ok) {
+      // Use redirectUrl from session if available
+      const redirectUrl = result.url || "/"; // Fallback to "/" if no redirectUrl
+      router.push(redirectUrl);
     }
   };
 

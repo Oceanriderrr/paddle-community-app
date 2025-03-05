@@ -1,4 +1,10 @@
+"use client";
+
+import { useSession } from "next-auth/react";
+import Link from "next/link";
+
 export default function Home() {
+  const { data: session } = useSession();
   const events = [
     { id: 1, title: "Paddle Meetup - Feb 28" },
     { id: 2, title: "Need Boat for Saturday" },
@@ -6,7 +12,6 @@ export default function Home() {
 
   return (
     <div className="min-h-screen hawaiian-bg wave-layer vignette flex flex-col items-center justify-center p-6">
-      {/* Header */}
       <h1 className="text-5xl font-bold text-[#F5F5F5] mb-4 border-b-2 border-[#6D4C41] pb-2 tracking-tight">
         Aloha Paddlers
       </h1>
@@ -14,12 +19,12 @@ export default function Home() {
 
       {/* Buttons */}
       <div className="flex space-x-6 mb-10">
-        <a href="/login" className="px-6 py-3 bg-[#40C4FF] text-[#1C2526] rounded-lg shadow-md hover:bg-[#558B2F] hover:text-[#F5F5F5] transition border border-[#6D4C41]">
+        <Link href="/login" className="px-6 py-3 bg-[#40C4FF] text-[#1C2526] rounded-lg shadow-md hover:bg-[#558B2F] hover:text-[#F5F5F5] transition border border-[#6D4C41]">
           Login
-        </a>
-        <a href="/signup" className="px-6 py-3 bg-[#558B2F] text-[#F5F5F5] rounded-lg shadow-md hover:bg-[#40C4FF] hover:text-[#1C2526] transition border border-[#6D4C41]">
+        </Link>
+        <Link href="/signup" className="px-6 py-3 bg-[#558B2F] text-[#F5F5F5] rounded-lg shadow-md hover:bg-[#40C4FF] hover:text-[#1C2526] transition border border-[#6D4C41]">
           Sign Up
-        </a>
+        </Link>
       </div>
 
       {/* Community Board */}
@@ -36,13 +41,19 @@ export default function Home() {
       </div>
 
       {/* Navigation */}
-      <div className="mt-10 flex space-x-6">
-        <a href="/paddlers" className="px-8 py-4 bg-[#558B2F] text-[#F5F5F5] rounded-lg shadow-md hover:bg-[#40C4FF] hover:text-[#1C2526] transition border border-[#6D4C41]">
+      <div className="mt-10 flex flex-col space-y-4 md:flex-row md:space-y-0 md:space-x-6">
+        <Link href="/paddlers" className="px-8 py-4 bg-[#558B2F] text-[#F5F5F5] rounded-lg shadow-md hover:bg-[#40C4FF] hover:text-[#1C2526] transition border border-[#6D4C41]">
           Find Paddlers
-        </a>
-        <a href="/boats" className="px-8 py-4 bg-[#40C4FF] text-[#1C2526] rounded-lg shadow-md hover:bg-[#558B2F] hover:text-[#F5F5F5] transition border border-[#6D4C41]">
+        </Link>
+        <Link href="/boats" className="px-8 py-4 bg-[#40C4FF] text-[#1C2526] rounded-lg shadow-md hover:bg-[#558B2F] hover:text-[#F5F5F5] transition border border-[#6D4C41]">
           Find Escort Boats
-        </a>
+        </Link>
+        {/* Dashboard Link (Only for Logged-In Users) */}
+        {session && (
+          <Link href={`/dashboard/${session.user.role}`} className="px-8 py-4 bg-[#6D4C41] text-[#F5F5F5] rounded-lg shadow-md hover:bg-[#40C4FF] hover:text-[#1C2526] transition border border-[#558B2F]">
+            Go to Dashboard
+          </Link>
+        )}
       </div>
     </div>
   );

@@ -1,15 +1,23 @@
-import './globals.css';
-import { Poppins } from 'next/font/google';
+import "./globals.css";
+import { Poppins } from "next/font/google";
+import AuthProvider from "./providers";
 
-const poppins = Poppins({ subsets: ['latin'], weight: ['400', '700'] });
+const poppins = Poppins({
+  subsets: ["latin"],
+  weight: ["400", "700"],
+});
+
+export const metadata = {
+  title: "Paddle Community App",
+  description: "Connecting Hawaii’s canoe paddling community",
+};
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <head>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" />
-      </head>
-      <body className={poppins.className}>{children}</body>
+      <body className={poppins.className}>
+        <AuthProvider>{children}</AuthProvider>
+      </body>
     </html>
   );
 }

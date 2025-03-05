@@ -39,14 +39,18 @@ export default NextAuth({
           const result = await db.collection("users").insertOne(newUser);
 
           if (!approved) {
-            return null; // NextAuth will redirect with error
+            throw new Error("Account created—awaiting admin approval"); // Redirect to /login with error
           }
 
+          // Redirect Paddler/Boat to their dashboard
+          const redirectPath = newRole === "paddler" ? "/dashboard/paddler" : "/dashboard/boat";
           return {
             id: result.insertedId.toString(),
             email,
             role: newRole,
             name: "New User",
+            redirect: true,
+            redirectUrl: redirectPath,
           };
         } else { // Login
           const user = await db.collection("users").findOne({ email });
@@ -56,20 +60,18 @@ export default NextAuth({
           if (!user.approved) {
             throw new Error("Account not yet approved");
           }
+
+          // Redirect to dashboard based on role
+          const redirectPath = user.role === "paddler" ? "/dashboard/paddler" : user.role === "boat" ? "/dashboard/boat" : user.role === "event_organizer" ? "/dashboard/organizer" : "/dashboard/admin";
           return {
             id: user._id.toString(),
             email: user.email,
             role: user.role,
             name: user.name,
+            redirect: true,
+            redirectUrl: redirectPath,
           };
         }
-      },
-      // Add custom error messages for CredentialsSignin
-      async error(credentials, req) {
-        if (credentials.role === "event_organizer" && !req.body.role) {
-          return "Account created—awaiting admin approval";
-        }
-        return "Invalid credentials";
       },
     }),
   ],
@@ -80,12 +82,18 @@ export default NextAuth({
       if (user) {
         token.role = user.role;
         token.id = user.id;
+        if (user.redirect) {
+          token.redirectUrl = user.redirectUrl; // Store redirect URL in token
+        }
       }
       return token;
     },
     async session({ session, token }) {
       session.user.role = token.role;
       session.user.id = token.id;
+      if (token.redirectUrl) {
+        return { ...session, redirectUrl: token.redirectUrl }; // Pass redirect URL to session
+      }
       return session;
     },
   },
