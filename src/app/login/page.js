@@ -1,6 +1,6 @@
 "use client";
 
-import { signIn } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import { useState, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 
@@ -10,7 +10,18 @@ export default function Login() {
   const searchParams = useSearchParams();
   const [error, setError] = useState("");
   const router = useRouter();
+  const { data: session, status } = useSession();
 
+  // Redirect to dashboard if already authenticated, but only on initial load
+  useEffect(() => {
+    console.log("Login useEffect - status:", status, "session:", session); // Debug log
+    if (status === "authenticated" && session?.user?.role && window.history.state?.idx === 0) {
+      console.log("Already authenticated, redirecting to:", `/dashboard/${session.user.role}`);
+      router.push(`/dashboard/${session.user.role}`);
+    }
+  }, [status, session, router]);
+
+  // Handle error from URL parameters
   useEffect(() => {
     const errorParam = searchParams.get("error");
     if (errorParam) {
@@ -20,15 +31,25 @@ export default function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const result = await signIn("credentials", { email, password, callbackUrl: "/" });
+    console.log("Submitting login with:", { email, password }); // Debug log
+    const result = await signIn("credentials", {
+      email,
+      password,
+      redirect: false,
+    });
+    console.log("Login result:", result); // Debug log
     if (result?.error) {
       setError(result.error);
     } else if (result?.ok) {
-      // Use redirectUrl from session if available
-      const redirectUrl = result.url || "/"; // Fallback to "/" if no redirectUrl
-      router.push(redirectUrl);
+      console.log("Login successful, redirecting to dashboard"); // Debug log
+      router.push(`/dashboard/${session?.user?.role || "paddler"}`); // Fallback to "paddler" if role is undefined
     }
   };
+
+  // Only render the form if not authenticated
+  if (status === "authenticated" && session?.user?.role) {
+    return <div>Redirecting...</div>; // Temporary placeholder while redirect happens
+  }
 
   return (
     <div className="min-h-screen hawaiian-bg wave-layer vignette flex flex-col items-center justify-center p-6">
@@ -63,7 +84,7 @@ export default function Login() {
         </div>
         <button
           type="submit"
-          className="w-full px-4 py-2 bg-[#40C4FF] text-[#1C2526] rounded-lg shadow-md hover:bg-[#558B2F] hover:text-[#F5F5F5] transition border border-[#6D4C41]"
+          className="w-full px-4 py-2 bg-[#40C4FF] text-[#1C2526] rounded-lg shadow-md hover:bg-[#558B2F] hover:text-[#5F5F5F] transition border border-[#6D4C41]"
         >
           Login
         </button>

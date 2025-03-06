@@ -8,17 +8,39 @@ export default function SignUp() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("paddler");
+  const [error, setError] = useState("");
   const router = useRouter();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const result = await signIn("credentials", { email, password, role, callbackUrl: "/" });
-    if (result?.error) {
-      // Error handled by /login (no action needed here)
-    } else if (result?.ok) {
-      // Use redirectUrl from session if available
-      const redirectUrl = result.url || "/"; // Fallback to "/" if no redirectUrl
-      router.push(redirectUrl);
+    console.log("Form submitted with:", { email, password, role });
+    try {
+      const result = await signIn("credentials", {
+        email,
+        password,
+        role,
+        redirect: false,
+      });
+      console.log("SignIn result:", result);
+      if (result?.error) {
+        console.error("Signup error:", result.error);
+        setError(result.error);
+      } else if (result?.ok) {
+        console.log("Signup successful, redirecting to:", role);
+        const redirectPath =
+          role === "paddler"
+            ? "/dashboard/paddler"
+            : role === "boat"
+            ? "/dashboard/boat"
+            : "/login";
+        router.push(redirectPath);
+      } else {
+        console.error("Unexpected signIn result:", result);
+        setError("Signup failed. Please try again.");
+      }
+    } catch (err) {
+      console.error("Signup exception:", err);
+      setError("An unexpected error occurred. Please try again.");
     }
   };
 
@@ -27,6 +49,11 @@ export default function SignUp() {
       <h1 className="text-5xl font-bold text-[#F5F5F5] mb-6 border-b-2 border-[#6D4C41] pb-2 tracking-tight">
         Sign Up
       </h1>
+      {error && (
+        <div className="mb-4 text-red-500 text-lg bg-[#F5F5F5] p-3 rounded-lg shadow-md">
+          {error}
+        </div>
+      )}
       <form onSubmit={handleSubmit} className="w-full max-w-md bg-[#F5F5F5] rounded-lg shadow-lg p-6">
         <div className="mb-4">
           <label className="block text-[#1C2526] text-lg mb-2">Email</label>
