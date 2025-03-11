@@ -7,19 +7,24 @@ import { useSearchParams, useRouter } from "next/navigation";
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const searchParams = useSearchParams();
   const [error, setError] = useState("");
+  const [isLoggingIn, setIsLoggingIn] = useState(false); // Track login state
+  const searchParams = useSearchParams();
   const router = useRouter();
-  const { data: session, status, update } = useSession(); // Added update function
+  const { data: session, status } = useSession();
 
+  // Redirect once session updates after login
   useEffect(() => {
-    console.log("Login useEffect - status:", status, "session:", session, "history idx:", window.history.state?.idx);
-    if (status === "authenticated" && session?.user?.role && window.history.state?.idx === 0) {
-      console.log("Already authenticated, redirecting to:", `/dashboard/${session.user.role}`);
-      router.push(`/dashboard/${session.user.role}`);
+    console.log("Login useEffect - status:", status, "session:", session, "isLoggingIn:", isLoggingIn);
+    if (status === "authenticated" && session?.user?.role) {
+      if (isLoggingIn || window.history.state?.idx === 0) {
+        console.log("Authenticated, redirecting to:", `/dashboard/${session.user.role}`);
+        router.push(`/dashboard/${session.user.role}`);
+      }
     }
-  }, [status, session, router]);
+  }, [status, session, router, isLoggingIn]);
 
+  // Handle error from URL parameters
   useEffect(() => {
     const errorParam = searchParams.get("error");
     if (errorParam) {
@@ -30,6 +35,7 @@ export default function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log("Submitting login with:", { email, password });
+    setIsLoggingIn(true); // Indicate login is in progress
     const result = await signIn("credentials", {
       email,
       password,
@@ -38,19 +44,12 @@ export default function Login() {
     console.log("Login result:", result);
     if (result?.error) {
       setError(result.error);
-    } else if (result?.ok) {
-      // Wait for session to update before redirecting
-      await update(); // Force session update
-      if (session?.user?.role) {
-        console.log("Login successful, redirecting to:", `/dashboard/${session.user.role}`);
-        router.push(`/dashboard/${session.user.role}`);
-      } else {
-        console.error("No role in session after login update");
-        setError("Login successful, but role is missing. Please try again.");
-      }
-    } else {
+      setIsLoggingIn(false); // Reset login state
+    } else if (!result?.ok) {
       setError("Login failed. Please try again.");
+      setIsLoggingIn(false);
     }
+    // Redirect will be handled by useEffect once session updates
   };
 
   if (status === "authenticated" && session?.user?.role) {

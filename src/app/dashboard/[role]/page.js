@@ -2,12 +2,13 @@
 
 import { useSession, signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { useEffect, use } from "react"; // Import use from react
+import { useEffect } from "react";
+import React from "react"; // Import React for use()
 
 export default function Dashboard({ params }) {
   const { data: session, status } = useSession();
   const router = useRouter();
-  const role = use(params).role; // Unwrap params with React.use()
+  const { role } = React.use(params); // Unwrap params using React.use()
 
   useEffect(() => {
     if (status === "loading") return;
@@ -31,6 +32,7 @@ export default function Dashboard({ params }) {
   if (status === "loading") return <div>Loading...</div>;
   if (!session) return null;
 
+  // Fallback to session.user.role if params.role is undefined
   const displayRole = role || session.user.role;
   if (!displayRole) {
     console.error("No role available for display");
