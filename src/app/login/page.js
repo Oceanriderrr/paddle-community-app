@@ -10,18 +10,16 @@ export default function Login() {
   const searchParams = useSearchParams();
   const [error, setError] = useState("");
   const router = useRouter();
-  const { data: session, status } = useSession();
+  const { data: session, status, update } = useSession(); // Added update function
 
-  // Redirect to dashboard if already authenticated, but only on initial load
   useEffect(() => {
-    console.log("Login useEffect - status:", status, "session:", session); // Debug log
+    console.log("Login useEffect - status:", status, "session:", session, "history idx:", window.history.state?.idx);
     if (status === "authenticated" && session?.user?.role && window.history.state?.idx === 0) {
       console.log("Already authenticated, redirecting to:", `/dashboard/${session.user.role}`);
       router.push(`/dashboard/${session.user.role}`);
     }
   }, [status, session, router]);
 
-  // Handle error from URL parameters
   useEffect(() => {
     const errorParam = searchParams.get("error");
     if (errorParam) {
@@ -31,24 +29,38 @@ export default function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Submitting login with:", { email, password }); // Debug log
+    console.log("Submitting login with:", { email, password });
     const result = await signIn("credentials", {
       email,
       password,
       redirect: false,
     });
-    console.log("Login result:", result); // Debug log
+    console.log("Login result:", result);
     if (result?.error) {
       setError(result.error);
     } else if (result?.ok) {
-      console.log("Login successful, redirecting to dashboard"); // Debug log
-      router.push(`/dashboard/${session?.user?.role || "paddler"}`); // Fallback to "paddler" if role is undefined
+      // Wait for session to update before redirecting
+      await update(); // Force session update
+      if (session?.user?.role) {
+        console.log("Login successful, redirecting to:", `/dashboard/${session.user.role}`);
+        router.push(`/dashboard/${session.user.role}`);
+      } else {
+        console.error("No role in session after login update");
+        setError("Login successful, but role is missing. Please try again.");
+      }
+    } else {
+      setError("Login failed. Please try again.");
     }
   };
 
-  // Only render the form if not authenticated
   if (status === "authenticated" && session?.user?.role) {
-    return <div>Redirecting...</div>; // Temporary placeholder while redirect happens
+    return (
+      <div className="min-h-screen hawaiian-bg wave-layer vignette flex flex-col items-center justify-center p-6">
+        <h1 className="text-5xl font-bold text-[#F5F5F5] mb-6 border-b-2 border-[#6D4C41] pb-2 tracking-tight">
+          Redirecting...
+        </h1>
+      </div>
+    );
   }
 
   return (
@@ -84,7 +96,7 @@ export default function Login() {
         </div>
         <button
           type="submit"
-          className="w-full px-4 py-2 bg-[#40C4FF] text-[#1C2526] rounded-lg shadow-md hover:bg-[#558B2F] hover:text-[#5F5F5F] transition border border-[#6D4C41]"
+          className="w-full px-4 py-2 bg-[#40C4FF] text-[#1C2526] rounded-lg shadow-md hover:bg-[#558B2F] hover:text-[#F5F5F5] transition border border-[#6D4C41]"
         >
           Login
         </button>
