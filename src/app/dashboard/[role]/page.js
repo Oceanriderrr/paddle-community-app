@@ -20,7 +20,6 @@ export default function Dashboard({ params }) {
   const [events, setEvents] = useState([]);
 
   useEffect(() => {
-    // Log initial state when useEffect runs
     console.log("=== useEffect Start ===");
     console.log("Current status:", status);
     console.log("Session data:", session);
@@ -38,7 +37,6 @@ export default function Dashboard({ params }) {
       return;
     }
 
-    // At this point, user is authenticated (status === "authenticated")
     console.log("Status is 'authenticated' - user is logged in.");
     console.log("Session user role:", session?.user?.role);
 
@@ -65,7 +63,18 @@ export default function Dashboard({ params }) {
     console.log("No redirect needed - roles match and user is authenticated.");
     console.log("=== useEffect End ===");
 
-    // Fetch events for the paddler
+    // Fetch profile and events
+    const fetchProfile = async () => {
+      try {
+        const response = await fetch(`/api/user?email=${session.user.email}`);
+        if (!response.ok) throw new Error("Failed to fetch profile");
+        const data = await response.json();
+        setProfile((prev) => ({ ...prev, ...data }));
+      } catch (err) {
+        console.error("Error fetching profile:", err);
+      }
+    };
+
     const fetchEvents = async () => {
       try {
         const response = await fetch("/api/events");
@@ -78,6 +87,7 @@ export default function Dashboard({ params }) {
     };
 
     if (status === "authenticated" && session.user.email) {
+      fetchProfile();
       fetchEvents();
     }
   }, [status, session, role, router]);
@@ -115,6 +125,13 @@ export default function Dashboard({ params }) {
       console.log("Profile save response:", data);
       setProfile((prev) => ({ ...prev, editing: false }));
       setError(null);
+      // Re-fetch profile and events after save
+      const fetchProfile = async () => {
+        const response = await fetch(`/api/user?email=${session.user.email}`);
+        const data = await response.json();
+        setProfile((prev) => ({ ...prev, ...data }));
+      };
+      fetchProfile();
     } catch (err) {
       setError(`Error updating profile: ${err.message}`);
       console.error("Profile save error:", err);
